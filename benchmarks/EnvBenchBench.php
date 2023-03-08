@@ -10,6 +10,7 @@ use Crell\EnvBench\Environment;
 use Crell\EnvBench\EnvironmentNoFolding;
 use Crell\EnvBench\EnvironmentPhpNames;
 use Crell\EnvBench\ManualMap;
+use Crell\EnvMapper\EnvMapper;
 use Crell\Serde\Formatter\ArrayFormatter;
 use Crell\Serde\SerdeCommon;
 use PhpBench\Benchmark\Metadata\Annotations\AfterMethods;
@@ -33,6 +34,7 @@ class EnvBenchBench
 {
     protected readonly SerdeCommon $serde;
     protected readonly ManualMap $manualMapper;
+    protected readonly EnvMapper $envMapper;
 
     public function setUp(): void
     {
@@ -43,6 +45,8 @@ class EnvBenchBench
         );
 
         $this->manualMapper = new ManualMap();
+
+        $this->envMapper = new EnvMapper();
     }
 
     public function tearDown(): void {}
@@ -81,6 +85,12 @@ class EnvBenchBench
     }
 
     public function bench_manual_map_using_auto_rename_optimized(): void
+    {
+        /** @var EnvironmentPhpNames $env */
+        $env = $this->manualMapper->mapDynamicCaseFoldingOptimized($_ENV, EnvironmentPhpNames::class);
+    }
+
+    public function bench_envmapper(): void
     {
         /** @var EnvironmentPhpNames $env */
         $env = $this->manualMapper->mapDynamicCaseFoldingOptimized($_ENV, EnvironmentPhpNames::class);
